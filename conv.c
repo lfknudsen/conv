@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 	if (API_KEY == "SET API KEY HERE TO USE THIS FEATURE")
 	{
 		printf("To convert between currencies, please open conv.c and edit the file\
-as indicated at the top, under the SETUP banner.\n");
+ as indicated at the top, under the SETUP banner.\n");
 		return 1;
 	}
 
@@ -82,10 +82,14 @@ Example:\n./conv 100 JPY DKK\n";
 	char *alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	int curr_from_pos = 2, curr_to_pos = 3; // which arguments correspond to the currency codes
 	double value = 1.0;
-	if (argc == 3) { curr_from_pos = 1; curr_to_pos = 2; }
-	else if (argc == 5) { curr_from_pos = 2; curr_to_pos = 4; }
-	if (argc == 5 || argc == 4) { value = atof(argv[1]); }
-	if (argc == 4 && value == 0.0) { value = 1.0; curr_from_pos = 1; curr_to_pos = 3; }
+	if (argc == 3)
+		{ curr_from_pos = 1; curr_to_pos = 2; }
+	else if (argc == 5)
+		{ curr_from_pos = 2; curr_to_pos = 4; }
+	if (argc == 5 || argc == 4)
+		{ value = atof(argv[1]); }
+	if (argc == 4 && value == 0.0 && strcmp(argv[2],"to") == 0)
+		{ value = 1.0; curr_from_pos = 1; curr_to_pos = 3; }
 	if (
 		   (argc > 5 || argc < 3)
 		|| (!
