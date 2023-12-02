@@ -1,5 +1,5 @@
 # conv
-CLI utility for simple and intuitive currency conversion, connecting to an online exchange server for up-to-date information. Written in C.
+CLI utility for simple and intuitive currency conversion, connecting to an online exchange server for up-to-date information. Works on UNIX. Written in C.
 
 ## Requirements
 Uses `libcurl` to connect to the internet. You probably have it already. If not, look for lcurl or similar in your favourite package manager.
@@ -21,34 +21,34 @@ Uses `libcurl` to connect to the internet. You probably have it already. If not,
 ### On PATH
 I recommend compiling to somewhere on your PATH for ease of use. To do this directly:
 
-`make path`
+`$ make path`
 
 or
 
-`sudo gcc -o //usr/local/bin/conv conv.c -lcurl`
+`$ sudo gcc -o //usr/local/bin/conv conv.c -lcurl`
 
 ### In current directory
-`make`
+`$ make`
 
 or
 
-`gcc -o conv conv.c -lcurl`
+`$ gcc -o conv conv.c -lcurl`
 
 ## Usage
 Assuming the executable is saved to a directory that's an environment variable:
 
-`conv [<Value>] <From> [to] <To>`
+`$ conv [<Value>] <From> [to] <To>`
 
 Case insensitive.
 
 ### Examples
-`conv 10 DKK JPY`
+`$ conv 10 DKK JPY`
 
-`conv 10 GBP to EUR`
+`$ conv 10 GBP to EUR`
 
-`conv usd dkk`
+`$ conv usd dkk`
 
-`conv usd to dkk`
+`$ conv usd to dkk`
 
 ## Planned Features
 1. General unit conversion.
