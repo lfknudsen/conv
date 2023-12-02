@@ -1,11 +1,23 @@
 CC?=gcc
 CFLAGS?=-std=c11 -Werror -Wextra -pedantic -g
+INSTALL_LOC?=\//usr/local/bin/
+FILE?=conv
 
-conv: conv.c
-	${CC} conv.c -o conv -lcurl
+here: conv.c
+	${CC} conv.c -o ${FILE} -lcurl
+	touch ~/.config/test.txt
+
+debug: conv.c
+	${CC} conv.c -o ${FILE} -lcurl ${CFLAGS}
 
 all: conv.c
-	${CC} conv.c -o conv -lcurl ${CFLAGS} -Wall
+	${CC} conv.c -o ${FILE} -lcurl ${CFLAGS} -Wall
 
-debug: conv.c	
-	${CC} conv.c -o conv -lcurl ${CFLAGS}
+path: conv.c
+	sudo ${CC} conv.c -o ${INSTALL_LOC}${FILE} -lcurl
+
+pathdebug: conv.c
+	sudo ${CC} conv.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS}
+
+pathall: conv.c
+	sudo ${CC} conv.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS} -Wall
