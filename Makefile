@@ -5,7 +5,6 @@ FILE?=conv
 
 here: conv.c
 	${CC} conv.c -o ${FILE} -lcurl
-	touch ~/.config/test.txt
 
 debug: conv.c
 	${CC} conv.c -o ${FILE} -lcurl ${CFLAGS}
