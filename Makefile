@@ -3,20 +3,20 @@ CFLAGS?=-std=c11 -Werror -Wextra -pedantic -g
 INSTALL_LOC?=\//usr/local/bin/
 FILE?=conv
 
-here: conv.c
-	${CC} conv.c -o ${FILE} -lcurl
+here: conv.c parse.c curr.c
+	${CC} conv.c parse.c curr.c -o ${FILE} -lcurl
 
-debug: conv.c
-	${CC} conv.c -o ${FILE} -lcurl ${CFLAGS}
+debug: conv.c parse.c curr.c
+	${CC} conv.c parse.c curr.c -o ${FILE} -lcurl ${CFLAGS}
 
-all: conv.c
-	${CC} conv.c -o ${FILE} -lcurl ${CFLAGS} -Wall
+all: conv.c parse.c curr.c
+	${CC} conv.c parse.c curr.c -o ${FILE} -lcurl ${CFLAGS} -Wall
 
-path: conv.c
-	sudo ${CC} conv.c -o ${INSTALL_LOC}${FILE} -lcurl
+path: conv.c parse.c curr.c
+	sudo ${CC} conv.c parse.c curr.c -o ${INSTALL_LOC}${FILE} -lcurl
 
-pathdebug: conv.c
-	sudo ${CC} conv.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS}
+pathdebug: conv.c parse.c curr.c
+	sudo ${CC} conv.c parse.c curr.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS}
 
-pathall: conv.c
-	sudo ${CC} conv.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS} -Wall
+pathall: conv.c parse.c curr.c
+	sudo ${CC} conv.c parse.c curr.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS} -Wall
