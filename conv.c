@@ -15,6 +15,8 @@
 // ./conv 10 GBP to EUR
 // ./conv usd dkk
 // ./conv usd to dkk
+// ./conv 10 C K
+// ./conv 10 Kelvin Rankine
 // ==============================================================================================
 
 #include <curl/curl.h>
@@ -26,8 +28,6 @@
 #include "parse.h"
 #include "curr.h"
 #include "temperature.h"
-
-//#include "strings.h"
 
 #define DEBUG 0
 
@@ -48,13 +48,7 @@ void dealloc(void *ptr, char* label) {
 	free(ptr);
 }
 
-int main(int argc, char *argv[])
-{
-	char *usage_msg = "Usage:\n./conv <VAL> <FROM> [to] <TO>\n\
-./conv <FROM> <TO>\n\
-Case insensitive.\n\
-Example:\n./conv 100 JPY DKK\n";
-
+int main(int argc, char *argv[]) {
 	struct parsed_input *input = malloc(sizeof(struct parsed_input));
 	if (parse_input(input, argc, argv) == 1) {
 		free(input);

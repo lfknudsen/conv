@@ -2,13 +2,13 @@
 #define CONV_H
 
 enum conv_type {
-	Invalid,
+	Invalid,		// default case
 	Currency,
-	Volume,
-	Distance,
-	Weight,
+	Volume,			// unimplemented
+	Distance,		// unimplemented
+	Weight,			// unimplemented
 	Temperature,
-	Data_Size
+	Data_Size		// unimplemented
 };
 
 struct parsed_input {
