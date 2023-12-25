@@ -5,7 +5,7 @@ CLI utility for simple and intuitive unit conversion. Written in C.
 Uses `libcurl` to connect to the online exchange server for currency conversion.
 
 If you don't wish to use this feature, there will be no set-up required, but the
-program still expects the library. To remove this:
+program still expects the library. To remove this (in addition to potentially editing Makefile):
    * In `curr.c`:
       Delete anything involving `curl`.
    * In `conv.c`:
@@ -55,10 +55,10 @@ Case insensitive.
 `$ conv 10 Ro to CELSIUS`\
 
 
-## Supported temperature scales:
-Matches greedily to smallest required info, so R = Rankine, Re = Reaumur, and Renkine = Reaumur.
-
+### Supported temperature scales:
 Celsius, Kelvin, Fahrenheit, Rankine, Newton, Delisle, Réaumur/Reaumur, Rømer/Roemer/Romer.
+
+Matches greedily to smallest required info, so input `R` is understood as Rankine, `Re` as Reaumur, and the misspelling `Renkine` as Reaumur.
 
 ## Planned Features
 1. General unit conversion.
