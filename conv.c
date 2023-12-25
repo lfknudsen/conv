@@ -25,6 +25,7 @@
 #include "conv.h"
 #include "parse.h"
 #include "curr.h"
+#include "temperature.h"
 
 //#include "strings.h"
 
@@ -65,7 +66,15 @@ Example:\n./conv 100 JPY DKK\n";
 			convert_currency(API_KEY, input, &result);
 			printf("%lf\n", result);
 			break;
+		case Temperature:
+			if (convert_temperature(input, &result)) {
+				printf("Temperature scale not implemented yet.\n");
+			} else {
+				printf("%lf\n", result);
+			}
+			break;
 		default:
+			printf("No conversion type found.\n");
 			break;
 	};
 

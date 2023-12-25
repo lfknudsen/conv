@@ -2,6 +2,7 @@
 #define CONV_H
 
 enum conv_type {
+	Invalid,
 	Currency,
 	Volume,
 	Distance,
