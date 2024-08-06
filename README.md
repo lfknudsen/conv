@@ -48,25 +48,35 @@ Assuming the executable is called with `conv`:\
 Case insensitive.
 
 ### Examples
-```conv 10 DKK JPY
 ```
-```conv 10 GBP to EUR
+conv 10 DKK JPY
 ```
-```conv usd dkk
 ```
-```conv usd to dkk
+conv 10 GBP to EUR
 ```
-```conv 10 c f
 ```
-```conv 10 kelvin rankine
+conv usd dkk
 ```
-```conv 10 Rømer to Delisle
 ```
-```conv 10 Ro to CELSIUS
+conv usd to dkk
 ```
-```conv 10 picas to points
 ```
-```conv 17 yards to ft
+conv 10 c f
+```
+```
+conv 10 kelvin rankine
+```
+```
+conv 10 Rømer to Delisle
+```
+```
+conv 10 Ro to CELSIUS
+```
+```
+conv 10 picas to points
+```
+```
+conv 17 yards to ft
 ```
 
 ## Supported temperature scales
@@ -78,17 +88,17 @@ Celsius, Kelvin, Fahrenheit, Rankine, Newton, Delisle, Réaumur/Reaumur, Rømer/
 Unless otherwise specified, units follow the international definition.
 
 ### SI units:
-All metre-based units from yoctometres (10^-24^) to ronnametres (10^27^)
+All metre-based units from yoctometres (10<sup>-24</sup>) to ronnametres (10<sup>27</sup>)
 are implemented. Note that the output is limited to six decimal places.
 
 ### U.S. customary/British imperial units:
-Mile, mil, inch, foot, yard, statute mile, chain, furlong, rod.
+Miles, thous, inches, feet, yards, statute miles, chains, furlongs, rods.
 
 ### Typographical units:
-Pica, point, twip.
+Picas, points, twips.
 
 ### Nautical units:
-Fathom, cable length, (U.S.) nautical mile.
+Fathoms, cable lengths, (U.S.) nautical miles.
 
 ### Misc.:
 Hand.
