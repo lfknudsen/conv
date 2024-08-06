@@ -37,7 +37,7 @@ make path
 ```
 OR
 ```
-udo gcc -o //usr/local/bin/conv conv.c parse.c curr.c temperature.c length.c -lcurl
+sudo gcc -o //usr/local/bin/conv conv.c parse.c curr.c temperature.c length.c -lcurl
 ```
 ### In current directory
 ```
