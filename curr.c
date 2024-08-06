@@ -4,40 +4,50 @@
 #include <string.h>
 
 #include "curr.h"
-#include "conv.h"
 
 #define DIGIT_LIMIT 500
-#define DEBUG 0
 
 // Receives the response string to our HTTP(S) request.
 // Extracts relevant data (currency conversion rates), and outputs it as a two-line string.
-static size_t extract_rates(void *input_ptr, size_t elem_size, size_t elem_count, void *output_ptr)
+static size_t extract_rates(char* input_ptr, size_t elem_size, size_t elem_count, char* output_ptr)
 {
-	if (DEBUG) printf("Full response:\n%s\n\n", input_ptr);
-	char *mark = "\"rates\": {";
-	char *input = strstr(input_ptr, mark) + strlen(mark);
+	input_ptr[elem_count - 1] = '\0';
+	if (DEBUG) {
+		printf("Full response:\n");
+		for (unsigned int i = 0; i < elem_count; i++) {
+			printf("%c", input_ptr[i]);
+		}
+		printf("\n\n");
+	}
+	char* mark = "\"rates\": {";
+	char* input = strstr(input_ptr, mark) + strlen(mark);
 
 	size_t val_length = strcspn(input, "}");
-	if (val_length == 0) { printf("Invalid country codes.\n"); return 0; }
+	if (val_length == 0) {
+		printf("Invalid country codes.\n");
+		return 0;
+	}
 
-	input = strpbrk(input, "0123456789."); // start input string from first country's rate.
-	val_length = strcspn(input, ",\n");    // distance to end of number.
-	size_t max = DIGIT_LIMIT < val_length ? DIGIT_LIMIT : val_length; // to prevent seg faults.
-	memcpy(output_ptr, input, val_length);  // copy number to output string ("extracted_rates").
-	strcat(output_ptr, "\n");
+	input = strpbrk(input, "0123456789.");		  // start input string from first country's rate.
+	val_length = strspn(input, "0123456789.");    // distance to end of number.
+	size_t max = (DIGIT_LIMIT < val_length) ? DIGIT_LIMIT : val_length; // to prevent seg faults.
+	strncpy(output_ptr, input, max);  // copy number to output string ("extracted_rates").
+	output_ptr[max] = '\n';
+	output_ptr[max + 1] = '\0';
 	input += val_length;
 
 	val_length = strcspn(input, "}");
 	if (val_length == 3) {
 		printf("You have one invalid country code. Please double-check your input.\n");
-		return 0; }
+		return 0;
+	}
 
-	input = strpbrk(input, "0123456789."); // start string from second countr's rate.
-	val_length = strcspn(input, ",\n");
-	max = DIGIT_LIMIT < val_length ? DIGIT_LIMIT : val_length;
-	strncat(output_ptr, input, max); // memcpy overwrites - this we append instead
+	input = strpbrk(input, "0123456789."); // start string from second country's rate.
+	val_length = strspn(input, "0123456789.");
+	max = (DIGIT_LIMIT < val_length) ? DIGIT_LIMIT : val_length;
+	strncat(output_ptr, input, max); // memcpy overwrites - with this we append instead
 
-	if (DEBUG) printf("Re-formatted response data:\n%s\n\n", output_ptr);
+	if (DEBUG) printf("Re-formatted response data (excl. quotation marks):\n\"%s\"\n\n", output_ptr);
 
 	return elem_count;
 }
@@ -65,7 +75,8 @@ int connect_with_curl(char *api_key, double *result, struct parsed_input *input)
 			{ printf("Write-function error.\n"); return 1; }
 
 		// extracted_rates contains output of extract_rates() function.
-		char *extracted_rates = malloc((DIGIT_LIMIT * 2) + 1); // two numbers plus a newline in between
+		char *extracted_rates = malloc((DIGIT_LIMIT * 2) + 1 + 1); // two numbers plus a newline in between and \0.
+		extracted_rates[0] = '\0';
 		if (curl_easy_setopt(curl, CURLOPT_WRITEDATA, extracted_rates) != CURLE_OK) {
 			printf("Write-data error.\n");
 			free(extracted_rates);
@@ -80,13 +91,13 @@ int connect_with_curl(char *api_key, double *result, struct parsed_input *input)
 			return 1;
 		}
 
-		if (DEBUG) printf("Final string:\n%s\n", extracted_rates);
+		if (DEBUG) printf("Final string (excl. quotation marks):\n\"%s\"\n", extracted_rates);
 
 		// Countries are listed alphabetically in API response, so need to know which is which.
 		int from_pos = strcmp(input->from, input->to);
-		char *token = strtok(extracted_rates, "\n");
+		char* token = strtok(extracted_rates, "\n");
 		double rate_from, rate_to;
-		if (from_pos < 0) // true = "from" currency is listed first in API response.
+		if (from_pos < 0) // this is true if "from" currency is listed first in API response.
 		{
 			rate_from = atof(token);
 			token = strtok(NULL, "\n");
@@ -101,32 +112,32 @@ int connect_with_curl(char *api_key, double *result, struct parsed_input *input)
 
 		*result = input->val / rate_from; // convert value in rate_from to USD
 		*result *= rate_to; // convert USD value to rate_to
-		//printf("%f %s\n", result, input->to);
 
 		free(extracted_rates);
 		curl_easy_cleanup(curl);
 		return 0;
 	}
 	curl_easy_cleanup(curl);
+	return 0;
 }
 
-int get_api_key(char *api_key) {
+int get_api_key(char* api_key) {
 	// Attempt first to use API key in conv.c, otherwise in settings file.
-	char *api_msg = "API key has not been set.\n\
+	const char *api_msg = "API key has not been set.\n\
 	Please either edit conv.c as indicated at the top of the file,\
 	or fill it in in ~/conv.ini:\napi_key=<here>\n";
 
 	if (strcmp(api_key,"SET API KEY HERE TO USE THIS FEATURE") == 0)
 	{
-		char *filename = "/conv.ini";
-		char *user_dir = malloc(100);
+		char* filename = "/conv.ini";
+		char* user_dir = malloc(100);
 		strcpy(user_dir, getenv("HOME"));
-		char *full_path = malloc(strlen(user_dir) + strlen(filename) + 1);
+		char* full_path = malloc(strlen(user_dir) + strlen(filename) + 1);
 		memcpy(full_path, user_dir, strlen(user_dir));
 		free(user_dir);
 		strcat(full_path, filename);
 
-		FILE *settings_file;
+		FILE* settings_file;
 		settings_file = fopen(full_path, "r");
 		if (settings_file == NULL)
 		{
@@ -143,7 +154,7 @@ int get_api_key(char *api_key) {
 		free(full_path);
 
 		fseek(settings_file, strlen("api_key="), SEEK_SET);
-		char *fgets_code = fgets(api_key, 100, settings_file);
+		char* fgets_code = fgets(api_key, 100, settings_file);
 		if (fgets_code == NULL || strlen(api_key) <= 1)
 		{
 			printf(api_msg); return 1;
@@ -157,7 +168,7 @@ int get_api_key(char *api_key) {
 }
 
 int convert_currency(char* key, struct parsed_input *input, double *result) {
-	char *api_key = malloc(100);
+	char* api_key = malloc(100);
 	strcpy(api_key, key);
 	get_api_key(api_key);
 

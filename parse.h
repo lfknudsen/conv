@@ -3,7 +3,7 @@
 
 #include "conv.h"
 
-void error_msg(char *program_name);
+int error_msg();
 
 int parse_input(struct parsed_input *input, int argc, char *argv[]);
 

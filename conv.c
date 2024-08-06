@@ -14,9 +14,11 @@
 // ./conv 10 DKK JPY
 // ./conv 10 GBP to EUR
 // ./conv usd dkk
-// ./conv usd to dkk
+// ./conv usd to DKK
 // ./conv 10 C K
 // ./conv 10 Kelvin Rankine
+// ./conv 700 m yd
+// ./conv 30 furlong to nmi
 // ==============================================================================================
 
 #include <curl/curl.h>
@@ -28,8 +30,7 @@
 #include "parse.h"
 #include "curr.h"
 #include "temperature.h"
-
-#define DEBUG 0
+#include "length.h"
 
 // ==============================================================================================
 // ----------------------------------------------------------------------------------------------
@@ -43,14 +44,23 @@
 // ----------------------------------------------------------------------------------------------
 // ==============================================================================================
 
-void dealloc(void *ptr, char* label) {
+void dealloc(void* ptr, char* label) {
 	printf("Freeing %s.\n", label);
 	free(ptr);
 }
 
-int main(int argc, char *argv[]) {
-	struct parsed_input *input = malloc(sizeof(struct parsed_input));
-	if (parse_input(input, argc, argv) == 1) {
+int main(int argc, char* argv[]) {
+	if (argc < 3) {
+		return error_msg(argv[0]);
+	}
+	struct parsed_input* input = malloc(sizeof(struct parsed_input));
+	int parse_ret = parse_input(input, argc, argv);
+	if (parse_ret == 1) {
+		free(input);
+		return 1;
+	}
+	if (parse_ret == 2) {
+		printf("Error: Same input and output type.\n");
 		free(input);
 		return 1;
 	}
@@ -58,17 +68,27 @@ int main(int argc, char *argv[]) {
 	switch (input->type) {
 		case Currency:
 			convert_currency(API_KEY, input, &result);
+			if (DEBUG) printf("Currency: ");
 			printf("%lf\n", result);
 			break;
 		case Temperature:
-			if (convert_temperature(input, &result)) {
-				printf("Temperature scale not implemented yet.\n");
+			if (convert_temperature(input->from[0], input->to[0], input->val, &result)) {
+				printf("Temperature scale not implemented.\n");
 			} else {
+				if (DEBUG) printf("Temperature: ");
+				printf("%lf\n", result);
+			}
+			break;
+		case Length:
+			if (convert_length(input->from[0], input->to[0], input->val, &result)) {
+				printf("Length scale not implemented.\n");
+			} else {
+				if (DEBUG) printf("Length: ");
 				printf("%lf\n", result);
 			}
 			break;
 		default:
-			printf("No conversion type found.\n");
+			printf("Unimplemented conversion type.\n");
 			break;
 	};
 

@@ -1,7 +1,27 @@
-#include "conv.h"
 #include "temperature.h"
+#include "units_temp.h"
+#include "string.h"
 
-int conversion(char from, char to, double val, double *result) {
+const char* temperatures[] = {
+	"C", "Celsius", "Centrigrade",
+	"F", "Fahrenheit",
+	"K", "Kelvin",
+	"Roe", "Rø", "Ro", "Roemer", "Romer", "Rømer",
+	"Ré", "Re", "Reaumur", "Réaumur",
+	"R", "Rankine",
+	"N", "Newton",
+	"D", "Delilse"
+};
+const char* temperatures_short = "CCCFFKKOOOOOOEEEERRNNDD"; // what each of above convert to internally
+const int   temperatures_len = 3 + 2 + 2 + 6 + 4 + 2 + 2 + 2;
+
+// Reads validity-checked input and converts between two temperature scales,
+// storing the outcome in *result (a pointer).
+// Returns:
+//		0 on success.
+//		1 on failure.
+// C = Celsius, K = Kelvin, F = Fahrenheit, R = Rankine, N = Newton, E = Réaumur, O = Rømer.
+int convert_temperature(char from, char to, double val, double *result) {
 	switch (from) {
 		case 'C':
 			switch (to) {
@@ -122,8 +142,8 @@ int conversion(char from, char to, double val, double *result) {
 					*result = val * (60.0/11.0) + 491.67;
 					return 0;
 				default:
-					conversion(from, 'K', val, result);
-					*result = conversion('K', to, *result, result);
+					convert_temperature(from, 'K', val, result);
+					*result = convert_temperature('K', to, *result, result);
 					return 0;
 			}
 		case 'E':
@@ -141,8 +161,8 @@ int conversion(char from, char to, double val, double *result) {
 					*result = val * (9.0/4.0) + 491.67;
 					return 0;
 				default:
-					conversion(from, 'K', val, result);
-					*result = conversion('K', to, *result, result);
+					convert_temperature(from, 'K', val, result);
+					*result = convert_temperature('K', to, *result, result);
 					return 0;
 			}
 		case 'O':
@@ -160,8 +180,8 @@ int conversion(char from, char to, double val, double *result) {
 					*result = (val - 7.5) * (24.0/7.0) + 491.67;
 					return 0;
 				default:
-					conversion(from, 'K', val, result);
-					*result = conversion('K', to, *result, result);
+					convert_temperature(from, 'K', val, result);
+					*result = convert_temperature('K', to, *result, result);
 					return 0;
 			}
 		case 'D':
@@ -179,22 +199,12 @@ int conversion(char from, char to, double val, double *result) {
 					*result = 671.67 - val * (6.0/5.0);
 					return 0;
 				default:
-					conversion(from, 'K', val, result);
-					*result = conversion('K', to, *result, result);
+					convert_temperature(from, 'K', val, result);
+					*result = convert_temperature('K', to, *result, result);
 					return 0;
 		}
 		default:
 			return 1;
 	}
 	return 1;
-}
-
-// Reads validity-checked input and converts between two temperature scales,
-// storing the outcome in *result (a pointer).
-// Returns:
-//		0 on success.
-//		1 on failure.
-// C = Celsius, K = Kelvin, F = Fahrenheit, R = Rankine, N = Newton, E = Réaumur, O = Rømer.
-int convert_temperature(struct parsed_input *input, double *result) {
-	return conversion(input->from[0], input->to[0], input->val, result);
 }

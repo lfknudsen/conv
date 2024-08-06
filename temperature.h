@@ -8,6 +8,6 @@
 // Returns:
 //		0 on success.
 //		1 on failure.
-int convert_temperature(struct parsed_input *input, double *result);
+int convert_temperature(char from, char to, double val, double *result);
 
 #endif

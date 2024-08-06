@@ -1,22 +1,22 @@
 CC?=gcc
-CFLAGS?=-std=c11 -Werror -Wextra -pedantic -g
+CFLAGS?=-std=c11 -Wextra -Wall -pedantic -g
 INSTALL_LOC?=\//usr/local/bin/
 FILE?=conv
 
-here: conv.c parse.c curr.c temperature.c
-	${CC} conv.c parse.c curr.c temperature.c -o ${FILE} -lcurl
+here: conv.c parse.c curr.c temperature.c length.c
+	${CC} conv.c parse.c curr.c temperature.c length.c -o ${FILE} -lcurl
 
-debug: conv.c parse.c curr.c temperature.c
-	${CC} conv.c parse.c curr.c temperature.c -o ${FILE} -lcurl ${CFLAGS}
+debug: conv.c parse.c curr.c temperature.c length.c
+	${CC} conv.c parse.c curr.c temperature.c length.c -o ${FILE} -lcurl ${CFLAGS}
 
-all: conv.c parse.c curr.c temperature.c
-	${CC} conv.c parse.c curr.c temperature.c -o ${FILE} -lcurl ${CFLAGS} -Wall
+all: conv.c parse.c curr.c temperature.c length.c
+	${CC} conv.c parse.c curr.c temperature.c length.c -o ${FILE} -lcurl ${CFLAGS} -Wall
 
-path: conv.c parse.c curr.c temperature.c
-	sudo ${CC} conv.c parse.c curr.c temperature.c -o ${INSTALL_LOC}${FILE} -lcurl
+path: conv.c parse.c curr.c temperature.c length.c
+	sudo ${CC} conv.c parse.c curr.c temperature.c length.c -o ${INSTALL_LOC}${FILE} -lcurl
 
-pathdebug: conv.c parse.c curr.c temperature.c
-	sudo ${CC} conv.c parse.c curr.c temperature.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS}
+pathdebug: conv.c parse.c curr.c temperature.c length.c
+	sudo ${CC} conv.c parse.c curr.c temperature.c length.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS}
 
-pathall: conv.c parse.c curr.c temperature.c
-	sudo ${CC} conv.c parse.c curr.c temperature.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS} -Wall
+pathall: conv.c parse.c curr.c temperature.c length.c
+	sudo ${CC} conv.c parse.c curr.c temperature.c length.c -o ${INSTALL_LOC}${FILE} -lcurl ${CFLAGS} -Wall
