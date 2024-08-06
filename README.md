@@ -51,7 +51,7 @@ gcc -o conv conv.c parse.c curr.c temperature.c length.c -lcurl
 ## Usage
 Assuming the executable is called with `conv`:\
 `$ conv [<Value>] <From> [to] <To>`\
-Case insensitive.
+Case insensitive. The parser only looks at the first 2-4 characters in each input.
 
 ### Examples
 ```
@@ -99,7 +99,7 @@ Unless otherwise specified, units follow the international definition.
 
 ### SI units:
 All metre-based units from yoctometres (10<sup>-24</sup>m) to ronnametres (10<sup>27</sup>m)
-are implemented (specified by their prefix or symbol). Note that the output is limited to six decimal places.
+are implemented. Note that the output is limited to six decimal places.
 
 ### U.S. customary/British imperial units:
 Miles, thous, inches, feet, yards, statute miles, chains, furlongs, rods.
