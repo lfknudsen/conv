@@ -2,7 +2,8 @@
 #define DIST_H
 
 #include "conv.h"
+#include "units_length.h"
 
-int convert_length(char from, char to, double val, double *result);
+int convert_length(enum unit from, enum unit to, double val, double* result);
 
 #endif

@@ -4,11 +4,11 @@
 // Author: github.com/lfknudsen
 // ----------------------------------------------------------------------------------------------
 // Compile:
-// gcc conv.c -o conv -lcurl
+// gcc conv.c parse.c curr.c temperature.c length.c -o conv -lcurl
 //
 // Usage:
 // ./conv [<Value>] <From> [to] <To>
-// Case insensitive.
+// Mostly case insensitive.
 //
 // Examples:
 // ./conv 10 DKK JPY
@@ -31,6 +31,7 @@
 #include "curr.h"
 #include "temperature.h"
 #include "length.h"
+#include "units_length.h"
 
 // ==============================================================================================
 // ----------------------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]) {
 	if (argc < 3) {
 		return error_msg(argv[0]);
 	}
-	struct parsed_input* input = malloc(sizeof(struct parsed_input));
+	struct parsed_input* input = malloc(sizeof(*input));
 	int parse_ret = parse_input(input, argc, argv);
 	if (parse_ret == 1) {
 		free(input);
@@ -72,7 +73,7 @@ int main(int argc, char* argv[]) {
 			printf("%lf\n", result);
 			break;
 		case Temperature:
-			if (convert_temperature(input->from[0], input->to[0], input->val, &result)) {
+			if (convert_temperature(input->from.string[0], input->to.string[0], input->val, &result)) {
 				printf("Temperature scale not implemented.\n");
 			} else {
 				if (DEBUG) printf("Temperature: ");
@@ -80,7 +81,7 @@ int main(int argc, char* argv[]) {
 			}
 			break;
 		case Length:
-			if (convert_length(input->from[0], input->to[0], input->val, &result)) {
+			if (convert_length(input->from.unit, input->to.unit, input->val, &result)) {
 				printf("Length scale not implemented.\n");
 			} else {
 				if (DEBUG) printf("Length: ");

@@ -2,6 +2,7 @@
 !*.*
 conv.ini
 vgcore.*
+scratchpad.c
 
 # Prerequisites
 *.d

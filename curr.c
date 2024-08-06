@@ -65,7 +65,7 @@ int connect_with_curl(char *api_key, double *result, struct parsed_input *input)
 		char url[size_of_url];
 		sprintf(url,
 				"%s%s&symbols=%s,%s",
-				base_url, api_key, input->from, input->to);
+				base_url, api_key, input->from.string, input->to.string);
 		if (DEBUG) printf("Full request:\n%s\n", url);
 
 		if (curl_easy_setopt(curl, CURLOPT_URL,	url) != CURLE_OK)
@@ -94,7 +94,7 @@ int connect_with_curl(char *api_key, double *result, struct parsed_input *input)
 		if (DEBUG) printf("Final string (excl. quotation marks):\n\"%s\"\n", extracted_rates);
 
 		// Countries are listed alphabetically in API response, so need to know which is which.
-		int from_pos = strcmp(input->from, input->to);
+		int from_pos = strcmp(input->from.string, input->to.string);
 		char* token = strtok(extracted_rates, "\n");
 		double rate_from, rate_to;
 		if (from_pos < 0) // this is true if "from" currency is listed first in API response.
@@ -177,14 +177,15 @@ int convert_currency(char* key, struct parsed_input *input, double *result) {
 	// The variables are used to store the currency codes henceforth.
 	for (int i = 0; i < 3; i++)
 	{
-		if (input->from[i] > 90) {
-			input->from[i] -= 32;
+		if (input->from.string[i] > 90) {
+			input->from.string[i] -= 32;
 		}
-		if (input->to[i] > 90) {
-			input->to[i] -= 32;
+		if (input->to.string[i] > 90) {
+			input->to.string[i] -= 32;
 		}
 	}
-	if (DEBUG) printf("Fixed currency-code case:\nFrom: %s\nTo: %s\n", input->from, input->to);
+	if (DEBUG)
+		printf("Fixed currency-code case:\nFrom: %s\nTo: %s\n", input->from.string, input->to.string);
 
 	connect_with_curl(api_key, result, input);
 	free(api_key);

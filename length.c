@@ -3,195 +3,120 @@
 #include "length.h"
 #include "units_length.h"
 
-// Note: First dimension of lengths_symbols_si[] and
-// lengths_symbols_si_short[] must be equally long.
-const char *lengths_symbols_si[] = {
-		"ym", "zm", "am", "fm", "pm",
-		"nm", "um", "μm", "mm", "cm", "dm",
-		"m", "dam", "hm", "km", "Mm",
-		"Gm", "Tm", "Pm", "Em", "Zm",
-		"Ym", "Rm"};
-const char *lengths_symbols_si_short = "yzafpnuuicdmDhkMGTPEZYR";
-const int lengths_symbols_si_len = 23;
-
-// Note: First dimension of lengths_si[] and lengths_si_short[]
-// must be equally long.
-const char *lengths_si[] = {
-	"yocto", "zepto", "atto", "femto", "pico",
-	"nano", "micro", "milli", "centi", "deci",
-	"meter", "metre", "meters", "metres", "deca",
-	"hecto", "kilo", "mega", "giga", "tera",
-	"peta", "exa", "zetta", "yotta", "ronna"};
-const char *lengths_si_short = "yzafpnuicdmmmmDhkMGTPEZYR";
-const int lengths_si_len = 25;
-
-// Note: First dimension of lengths_us[] and lengths_us_short[]
-// must be equally long.
-const char *lengths_us[] = {
-	"mile",		"miles",	"mi",	"mi.",		// 4
-	"mil",		"mils",		"thou", "thous",	// 4
-	"inch",		"inches",	"\"",	"in",		// 4
-	"foot",		"feet",		"\'",	"ft",	"f",// 5
-	"yard",		"yards",	"yd",				// 3
-	"league",	"leagues",	"le",
-	"survey mile", "survey miles", "statute mile", "statute miles", // 3+4
-	"chain", "chains",							// 2
-	"furlong", "furlongs",						// 2
-	"rod", "rods", "pole", "poles", "perch", "perches", "lug", "lugs" // 8
-};
-const char *lengths_us_short = "llllttttIIIIFFFFFrrrsssssssCCUULLLLLLLL";
-const int lengths_us_len = 39;
-
-const char* lengths_typo[] = {
-	"pica", "picas", "p", "pc", "pcs",
-	"point", "points", "P", "pt", "pts",
-	"twip", "twips",
-};
-const char* lengths_typo_short = "AAAAAoooooww";
-const int lengths_typo_len = 12;
-
-const char* lengths_symbols_us_naut[] = {"ftm", "cb", "NM", "M", "nmi"};
-const char* lengths_symbols_us_naut_short = "ObNNN";
-const int lengths_symbols_us_naut_len = 5;
-
-const char* lengths_us_naut[] = {
-	"fathom", "fathoms",
-	"cable", "cables", "cable length", "cable lengths",
-	"nautical mile", "nautical miles", "nmile", "nmiles"
-};
-const char* lengths_us_naut_short = "OObbbbNNNN";
-const int lengths_us_naut_len = 10;
-
-const char* lengths_misc[] = {
-	"hand", "hands", "h", "hh"
-};
-const char* lengths_misc_short = "HHHH";
-const int lengths_misc_len = 4;
-
-static double dpow(double quotient, double exponent) {
-	if (exponent == 0) { return 1.0; }
-	if (exponent == 1) { return quotient; }
-	double prod = quotient;
-	for (int i = 0; i < exponent; i++) {
-		prod *= quotient;
-	}
-	return prod;
-}
-
 // Convert 'val' metres to another unit.
 // Returns 0 on success. Returns 1 otherwise.
-static int from_meter(char to, double val, double* result) {
-	if (DEBUG) printf("Converting from metres to %c.\n", to);
+static int from_meter(enum unit to, double val, double* result) {
+	if (DEBUG) printf("Converting from metres to %d.\n", to);
 	switch (to) {
-		case 'y': // yoctometre
+		case yocto: // yoctometre
 			*result = val * 1000000000000000000000000.0;
 			return 0;
-		case 'z': // zeptometre
+		case zepto: // zeptometre
 			*result = val * 1000000000000000000000.0;
 			return 0;
-		case 'a': // attometre
+		case atto: // attometre
 			*result = val * 1000000000000000000.0;
 			return 0;
-		case 'f': // femtometre
+		case femto: // femtometre
 			*result = val * 1000000000000000.0;
 			return 0;
-		case 'p': // picometre
+		case pico: // picometre
 			*result = val * 1000000000000.0;
 			return 0;
-		case 'n': // nanometre
+		case nano: // nanometre
 			*result = val * 1000000000.0;
 			return 0;
-		case 'u': // micrometre
+		case micro: // micrometre
 			*result = val * 1000000.0;
 			return 0;
-		case 'i': // millimetre
+		case milli: // millimetre
 			*result = val * 1000.0;
 			return 0;
-		case 'c': // centimetre
+		case centi: // centimetre
 			*result = val * 100.0;
 			return 0;
-		case 'd': // decimetre
+		case deci: // decimetre
 			*result = val * 10.0;
 			return 0;
-		case 'D': // decametre
+		case deca: // decametre
 			*result = val / 10.0;
 			return 0;
-		case 'h': // hectometre
+		case hecto: // hectometre
 			*result = val / 100.0;
 			return 0;
-		case 'k': // kilometre
+		case kilo: // kilometre
 			*result = val / 1000.0;
 			return 0;
-		case 'M': // megametre
+		case mega: // megametre
 			*result = val / 1000000.0;
 			return 0;
-		case 'G': // gigametre
+		case giga: // gigametre
 			*result = val / 1000000000.0;
 			return 0;
-		case 'T': // terametre
+		case tera: // terametre
 			*result = val / 1000000000000.0;
 			return 0;
-		case 'P': // petametre
+		case peta: // petametre
 			*result = val / 1000000000000000.0;
 			return 0;
-		case 'E': // exametre
+		case exa: // exametre
 			*result = val / 1000000000000000000.0;
 			return 0;
-		case 'Z': // zettametre
+		case zetta: // zettametre
 			*result = val / 1000000000000000000000.0;
 			return 0;
-		case 'Y': // yottametre
+		case yotta: // yottametre
 			*result = val / 1000000000000000000000000.0;
 			return 0;
-		case 'R': // ronnametre
+		case ronna: // ronnametre
 			*result = val / 1000000000000000000000000000.0;
 			return 0;
-		case 'l': // int. mile
+		case mile: // int. mile
 			*result = val / 1609.344;
 			return 0;
-		case 'w': // twip (17.64um)
+		case twip: // twip (17.64um)
 			*result = (val * 1000000) / 17.64;
 			return 0;
-		case 't': // mil / thou (25.4um)
+		case thou: // mil / thou (25.4um)
 			*result = (val * 1000000) / 25.4;
 			return 0;
-		case 'o': // point (0.3528mm)
+		case point: // point (0.3528mm)
 			*result = (val * 1000) / 0.3528;
 			return 0;
-		case 'A': // pica (4.2333mm)
+		case pica: // pica (4.2333mm)
 			*result = (val * 1000) / 4.2333;
 			return 0;
-		case 'I': // inch
+		case inch: // inch
 			*result = val * 39.37;
 			return 0;
-		case 'F': // foot (0.3048m)
+		case foot: // foot (0.3048m)
 			*result = val / 0.3048;
 			return 0;
-		case 'r': // yard
+		case yard: // yard
 			*result = val * 1.09361;
 			return 0;
-		case 's': // U.S. survey mile/league
+		case statute: // U.S. survey mile/league
 			*result = val / 1609.3472;
 			return 0;
-		case 'O': // fathom
+		case fathom: // fathom
 			*result = val * 0.5468;
 			return 0;
-		case 'b': // U.S. cable
+		case cable: // U.S. cable
 			*result = val / 220;
 			return 0;
-		case 'N': // nautical mile
+		case nautical: // nautical mile
 			*result = val / 1852;
 			return 0;
-		case 'H': // hand
+		case hand: // hand
 			*result = val * 9.84252;
 			return 0;
-		case 'C': // chain
+		case chain: // chain
 			*result = val / 20.1168;
 			return 0;
-		case 'U': // furlong
+		case furlong: // furlong
 			*result = val / 201.168;
 			return 0;
-		case 'L': // rod/pole/perch/lug
+		case rod: // rod/pole/perch/lug
 			*result = val / 5.0292;
 			return 0;
 		default:
@@ -203,118 +128,118 @@ static int from_meter(char to, double val, double* result) {
 
 // Convert 'val' units of the unit specified in 'from' to metres.
 // Returns 0 on success. Returns 1 otherwise.
-static int to_meter(char from, double val, double* result) {
-	if (DEBUG) printf("Converting to metres.\n");
+static int to_meter(enum unit from, double val, double* result) {
+	if (DEBUG) printf("Converting from %d to metres.\n", from);
 	switch (from) {
-		case 'y':
+		case yocto:
 			*result = val / 1000000000000000000000000.0;
 			return 0;
-		case 'z':
+		case zepto:
 			*result = val / 1000000000000000000000.0;
 			return 0;
-		case 'a':
+		case atto:
 			*result = val / 1000000000000000000.0;
 			return 0;
-		case 'f':
+		case femto:
 			*result = val / 1000000000000000.0;
 			return 0;
-		case 'p':
+		case pico:
 			*result = val / 1000000000000.0;
 			return 0;
-		case 'n':
+		case nano:
 			*result = val / 1000000000.0;
 			return 0;
-		case 'u':
+		case micro:
 			*result = val * 0.000001;
 			return 0;
-		case 'i':
+		case milli:
 			*result = val / 1000.0;
 			return 0;
-		case 'c':
+		case centi:
 			*result = val / 100.0;
 			return 0;
-		case 'd':
+		case deci:
 			*result = val / 10.0;
 			return 0;
-		case 'D':
+		case deca:
 			*result = val * 10.0;
 			return 0;
-		case 'h':
+		case hecto:
 			*result = val * 100.0;
 			return 0;
-		case 'k':
+		case kilo:
 			*result = val * 1000.0;
 			return 0;
-		case 'M':
+		case mega:
 			*result = val * 1000000.0;
 			return 0;
-		case 'G':
+		case giga:
 			*result = val * 1000000000.0;
 			return 0;
-		case 'T':
+		case tera:
 			*result = val * 1000000000000.0;
 			return 0;
-		case 'P':
+		case peta:
 			*result = val * 1000000000000000.0;
 			return 0;
-		case 'E':
+		case exa:
 			*result = val * 1000000000000000000.0;
 			return 0;
-		case 'Z':
+		case zetta:
 			*result = val * 1000000000000000000000.0;
 			return 0;
-		case 'Y':
+		case yotta:
 			*result = val * 1000000000000000000000000.0;
 			return 0;
-		case 'R':
+		case ronna:
 			*result = val * 1000000000000000000000000000.0;
 			return 0;
-		case 'l': // int. mile
+		case mile: // int. mile
 			*result = val * 1609.344;
 			return 0;
-		case 'w': // twip (17.64um)
+		case twip: // twip (17.64um)
 			*result = (val * 17.64) / 1000000;
 			return 0;
-		case 't': // mil / thou (25.4um)
+		case thou: // mil / thou (25.4um)
 			*result = (val * 25.4) / 1000000;
 			return 0;
-		case 'o': // point (0.3528mm)
+		case point: // point (0.3528mm)
 			*result = (val * 0.3528) / 1000;
 			return 0;
-		case 'A': // pica (4.2333mm)
+		case pica: // pica (4.2333mm)
 			*result = (val * 4.2333) / 1000;
 			return 0;
-		case 'I': // inch
+		case inch: // inch
 			*result = val / 39.37;
 			return 0;
-		case 'F': // foot (0.3048m)
+		case foot: // foot (0.3048m)
 			*result = val * 0.3048;
 			return 0;
-		case 'r': // yard
+		case yard: // yard
 			*result = val * 0.9144;
 			return 0;
-		case 's': // U.S. survey mile/league
+		case statute: // U.S. survey mile/league
 			*result = val * 1609.3472;
 			return 0;
-		case 'O': // fathom
+		case fathom: // fathom
 			*result = val * 1.8288;
 			return 0;
-		case 'b': // U.S. cable
+		case cable: // U.S. cable
 			*result = val * 220;
 			return 0;
-		case 'N': // nautical mile
+		case nautical: // nautical mile
 			*result = val * 1852;
 			return 0;
-		case 'H': // hand
+		case hand: // hand
 			*result = val * 0.1016;
 			return 0;
-		case 'C': // chain
+		case chain: // chain
 			*result = val * 20.1168;
 			return 0;
-		case 'U': // furlong
+		case furlong: // furlong
 			*result = val * 201.168;
 			return 0;
-		case 'L': // rod/pole/perch/lug
+		case rod: // rod/pole/perch/lug
 			*result = val * 5.0292;
 			return 0;
 		default:
@@ -326,14 +251,14 @@ static int to_meter(char from, double val, double* result) {
 
 // First converts to meters, then from there to the intended output unit.
 // Returns 0 on success. Returns 1 otherwise.
-int convert_length(char from, char to, double val, double* result) {
+int convert_length(enum unit from, enum unit to, double val, double* result) {
 	switch (from) {
-		case 'm':
+		case metre:
 			return from_meter(to, val, result);
 		default:
 			to_meter(from, val, result);
-			if (DEBUG) printf("%f %c -> %f m\n", val, from, *result);
-			if (to == 'm')
+			if (DEBUG) printf("%f %d -> %f m\n", val, from, *result);
+			if (to == metre)
 				return 0;
 			return from_meter(to, *result, result);
 	}
